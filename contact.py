@@ -14,6 +14,7 @@ class ContactBook:
                 print(f"{idx}: {name} - {phone}")
 
     def search_contact(self, name):
+        # Partial, case-insensitive match logic
         found = False
         for idx, (contact_name, phone) in enumerate(self.contacts):
             if name.lower() in contact_name.lower():
@@ -23,14 +24,20 @@ class ContactBook:
             print("Contact not found")
 
     def delete_contact(self, idx):
-        # BUG 3: No bounds checking, will crash with invalid index
-        del self.contacts[idx]
-        print("Contact deleted")
+        # Index bounds checking
+        if 0 <= idx < len(self.contacts):
+            del self.contacts[idx]
+            print("Contact deleted")
+        else:
+            print("Error: Invalid index. No contact deleted.")
 
     def update_contact(self, idx, name, phone):
-        # BUG 4: Typo, wrongly assigns tuple (name, phone) to .append method
-        self.contacts.append = (name, phone)
-        print("Contact updated")
+        # Index bounds checking and correct update logic
+        if 0 <= idx < len(self.contacts):
+            self.contacts[idx] = (name, phone)
+            print("Contact updated")
+        else:
+            print("Error: Invalid index. No contact updated.")
 
 def main():
     book = ContactBook()
@@ -47,13 +54,19 @@ def main():
             name = input("Enter name to search: ")
             book.search_contact(name)
         elif choice == "4":
-            idx = int(input("Enter contact index to delete: "))
-            book.delete_contact(idx)
+            try:
+                idx = int(input("Enter contact index to delete: "))
+                book.delete_contact(idx)
+            except ValueError:
+                print("Error: Please enter a valid number.")
         elif choice == "5":
-            idx = int(input("Enter contact index to update: "))
-            name = input("Enter new name: ")
-            phone = input("Enter new phone: ")
-            book.update_contact(idx, name, phone)
+            try:
+                idx = int(input("Enter contact index to update: "))
+                name = input("Enter new name: ")
+                phone = input("Enter new phone: ")
+                book.update_contact(idx, name, phone)
+            except ValueError:
+                print("Error: Please enter a valid number.")
         elif choice == "6":
             print("Goodbye")
             break
